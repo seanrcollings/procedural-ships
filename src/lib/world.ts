@@ -1,5 +1,11 @@
 import Two from "two.js";
-import type { Ship, StartEntity } from "./entities";
+import type { StartEntity } from "./entities";
+import type { Ship } from "./ship/ship";
+
+type Position = {
+  x: number;
+  y: number;
+};
 
 export class World {
   private two: Two;
@@ -21,13 +27,15 @@ export class World {
     return this.two.width;
   }
 
-  public addShip(ship: Ship) {
+  public addShip(ship: Ship, position: Position) {
     this.ships.push(ship);
+    ship.position.set(position.x, position.y);
     this.two.add(ship.shape);
   }
 
-  public addStar(star: StartEntity) {
+  public addStar(star: StartEntity, position: Position) {
     this.stars.push(star);
+    star.position.set(position.x, position.y);
     this.two.add(star.shape);
   }
 
