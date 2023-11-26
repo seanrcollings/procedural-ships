@@ -1,5 +1,6 @@
 import Two from "two.js";
 import type { Shape } from "two.js/src/shape";
+import type { Star } from "two.js/src/shapes/star";
 import type { Vector } from "two.js/src/vector";
 
 const SHIP_COLOR = "gray";
@@ -105,5 +106,20 @@ export class Ship extends Entity {
     ship.add(viewport);
 
     return new Ship(ship, Math.random() * 100);
+  }
+}
+
+interface StarParams {
+  x: number;
+  y: number;
+  size: number;
+}
+
+export class StartEntity extends Entity {
+  public static make({ x, y, size }: StarParams) {
+    const star = new Two.Star(x, y, size / 2, size);
+    star.fill = "white";
+    star.noStroke();
+    return new StartEntity(star);
   }
 }
