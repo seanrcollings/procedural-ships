@@ -7,30 +7,30 @@
   import { Ship } from "$lib/ship/ship";
 
   export let mousePosition: { x: number; y: number } | null = null;
-  export let includeStars: boolean = true;
+  export let starCount: number = 100;
+  export let shipCount: number = 10;
 
   let target: HTMLElement;
 
-  onMount(() => {
+  function createWorld() {
     const params = {
       fullscreen: true,
     };
+
     const world = new World(target, params);
 
-    if (includeStars) {
-      for (let i = 0; i < 1000; i++) {
-        const star = StartEntity.make({
-          size: Math.random() * 4,
-        });
+    for (let i = 0; i < starCount; i++) {
+      const star = StartEntity.make({
+        size: Math.random() * 4,
+      });
 
-        world.addStar(star, {
-          x: Math.random() * world.width,
-          y: Math.random() * world.height,
-        });
-      }
+      world.addStar(star, {
+        x: Math.random() * world.width,
+        y: Math.random() * world.height,
+      });
     }
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < shipCount; i++) {
       const ship = Ship.make({
         mass: Math.random() * 100 + 10,
       });
@@ -41,6 +41,10 @@
       });
     }
 
+    return world;
+  }
+
+  function runSimulation(world: World) {
     world.bind("update", (frame: number, frametime: number) => {
       if (frame % 10 === 0) {
         world.stars.forEach((star) => {
@@ -59,7 +63,7 @@
           ship.rotation = Math.PI / 2;
           ship.applyForce(new Two.Vector(0.1, 0));
 
-          if (ship.translation.x > world.width) {
+          if (ship.translation.x > world.width + 20) {
             ship.translation.x = 0;
             ship.velocity.x = 0;
             ship.position.set(
@@ -84,6 +88,11 @@
     });
 
     world.play();
+  }
+
+  onMount(() => {
+    const world = createWorld();
+    runSimulation(world);
   });
 </script>
 

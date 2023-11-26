@@ -10,4 +10,4 @@
   }}
 />
 
-<Space {mousePosition} includeStars={false} />
+<Space {mousePosition} starCount={0} shipCount={10} />
