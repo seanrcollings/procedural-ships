@@ -5,10 +5,13 @@
   import Two from "two.js";
   import type { Star } from "two.js/src/shapes/star";
   import { Ship } from "$lib/ship/ship";
+  import { paddedRandom } from "$lib/random";
 
   export let mousePosition: { x: number; y: number } | null = null;
   export let starCount: number = 100;
   export let shipCount: number = 10;
+
+  const SHIP_STARTING_POSITION = -50;
 
   let target: HTMLElement;
 
@@ -36,8 +39,8 @@
       });
 
       world.addShip(ship, {
-        x: -50,
-        y: Math.max(Math.random() * (world.height - 10), 10),
+        x: SHIP_STARTING_POSITION,
+        y: paddedRandom(world.height, 10),
       });
     }
 
@@ -66,10 +69,7 @@
           if (ship.translation.x > world.width + 20) {
             ship.translation.x = 0;
             ship.velocity.x = 0;
-            ship.position.set(
-              -50,
-              Math.max(Math.random() * (world.height - 10), 10)
-            );
+            ship.position.y = paddedRandom(world.height, 10);
           }
         } else {
           // Ships move towards the mouse
