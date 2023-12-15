@@ -6,6 +6,7 @@
   import type { Star } from "two.js/src/shapes/star";
   import { Ship, ShipType } from "$lib/ship/ship";
   import { paddedRandom } from "$lib/random";
+  import { PathFindingState } from "$lib/controller";
 
   export let mousePosition: { x: number; y: number } | null = null;
   export let starCount: number = 100;
@@ -16,13 +17,15 @@
     [ShipType.Transport]: 1,
   };
 
-  const SHIP_STARTING_POSITION = -50;
+  const SHIP_STARTING_POSITION = -100;
 
   let target: HTMLElement;
+  let mode: PathFindingState = PathFindingState.Wander;
 
   function createWorld() {
     const params = {
       fullscreen: true,
+      type: Two.Types.webgl,
     };
 
     const world = new World(target, params);
@@ -58,7 +61,7 @@
 
   function runSimulation(world: World) {
     world.bind("update", (frame: number, frametime: number) => {
-      if (frame % 10 === 0) {
+      if (frame % 10 !== 0) {
         world.stars.forEach((star) => {
           // Make the stars twinkle
           if (Math.random() < 0.7) return;
@@ -69,30 +72,18 @@
         });
       }
 
-      world.ships.forEach((ship) => {
-        if (mousePosition === null) {
-          // Ships move from the left to the right
-          ship.rotation = Math.PI / 2;
-          ship.applyForce(new Two.Vector(0.1, 0));
+      if (mode == PathFindingState.Seek) {
+        world.mousePosition = mousePosition;
+      }
 
-          if (ship.translation.x > world.width + 20) {
-            ship.translation.x = SHIP_STARTING_POSITION;
-            ship.velocity.x = 0;
-            ship.position.y = paddedRandom(world.height, 10);
-          }
+      world.controllers.forEach((controller) => {
+        if (mode == PathFindingState.Seek && mousePosition !== null) {
+          controller.pathFindingState = PathFindingState.Seek;
+          controller.target = new Two.Vector(mousePosition.x, mousePosition.y);
         } else {
-          // Ships move towards the mouse
-          const dx = mousePosition.x - ship.translation.x;
-          const dy = mousePosition.y - ship.translation.y;
-          const angle = Math.atan2(dy, dx);
-
-          ship.rotation = angle + Math.PI / 2;
-          ship.applyForce(
-            new Two.Vector(Math.sign(dx) * 0.1, Math.sign(dy) * 0.1)
-          );
+          controller.pathFindingState = PathFindingState.Wander;
         }
-
-        ship.update();
+        controller.update(world);
       });
     });
 
@@ -105,7 +96,18 @@
   });
 </script>
 
-<div id="space" bind:this={target}></div>
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<div
+  id="space"
+  bind:this={target}
+  on:click={() => {
+    mode =
+      mode == PathFindingState.Seek
+        ? PathFindingState.Wander
+        : PathFindingState.Seek;
+  }}
+></div>
 
 <style>
   #space {

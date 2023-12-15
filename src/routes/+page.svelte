@@ -13,11 +13,11 @@
 
 <Space
   {mousePosition}
-  starCount={0}
+  starCount={100}
   shipCount={{
-    [ShipType.Scout]: 1,
-    [ShipType.Fighter]: 1,
-    [ShipType.Bomber]: 1,
-    [ShipType.Transport]: 1,
+    [ShipType.Scout]: 15,
+    [ShipType.Fighter]: 10,
+    // [ShipType.Bomber]: 10,
+    [ShipType.Transport]: 10,
   }}
 />

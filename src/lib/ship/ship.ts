@@ -28,7 +28,7 @@ export class Ship extends Entity {
     const shape = builder.shape();
     const mass = builder.mass();
     const scale = builder.scale();
-    shape.scale = 0.2;
+    shape.scale = scale;
 
     return new Ship(shape, mass, params.type);
   }
@@ -87,7 +87,7 @@ const shipBuilders = {
       return ship;
     },
     mass() {
-      return rangeRandom(10, 100);
+      return rangeRandom(20, 100);
     },
     scale() {
       return 0.2;
@@ -153,10 +153,10 @@ const shipBuilders = {
       return ship;
     },
     mass() {
-      return rangeRandom(10, 100);
+      return rangeRandom(30, 200);
     },
     scale() {
-      return 0.2;
+      return 0.3;
     },
     colors: {
       body: "green",
@@ -238,10 +238,10 @@ const shipBuilders = {
       return ship;
     },
     mass() {
-      return rangeRandom(10, 100);
+      return rangeRandom(50, 150);
     },
     scale() {
-      return 0.2;
+      return 0.3;
     },
     colors: {
       body: "#2b6484",
@@ -319,7 +319,7 @@ const shipBuilders = {
       return ship;
     },
     mass() {
-      return rangeRandom(10, 100);
+      return rangeRandom(10, 75);
     },
     scale() {
       return 0.2;

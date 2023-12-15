@@ -1,19 +1,18 @@
 import Two from "two.js";
 import type { StarEntity } from "./entities";
+import type { Position } from "./types";
 import type { Ship } from "./ship/ship";
-
-type Position = {
-  x: number;
-  y: number;
-};
+import { Controller } from "./controller";
 
 export class World {
   private two: Two;
-  ships: Ship[];
+  controllers: Controller[];
   stars: StarEntity[];
+  mousePosition: Position | null = null;
+  killBorder = 100;
 
   constructor(element: HTMLElement, params = {}) {
-    this.ships = [];
+    this.controllers = [];
     this.stars = [];
     this.two = new Two(params);
     this.two.appendTo(element);
@@ -28,8 +27,9 @@ export class World {
   }
 
   public addShip(ship: Ship, position: Position) {
-    this.ships.push(ship);
-    ship.position.set(position.x, position.y);
+    const controller = new Controller(ship);
+    this.controllers.push(controller);
+    ship.translation.set(position.x, position.y);
     this.two.add(ship.shape);
   }
 
