@@ -1,15 +1,20 @@
 <script lang="ts">
   import { World } from "$lib/world";
-  import { StartEntity } from "$lib/entities";
+  import { StarEntity } from "$lib/entities";
   import { onMount } from "svelte";
   import Two from "two.js";
   import type { Star } from "two.js/src/shapes/star";
-  import { Ship } from "$lib/ship/ship";
+  import { Ship, ShipType } from "$lib/ship/ship";
   import { paddedRandom } from "$lib/random";
 
   export let mousePosition: { x: number; y: number } | null = null;
   export let starCount: number = 100;
-  export let shipCount: number = 10;
+  export let shipCount: Partial<{ [key in ShipType]: number }> = {
+    [ShipType.Scout]: 1,
+    [ShipType.Fighter]: 1,
+    [ShipType.Bomber]: 1,
+    [ShipType.Transport]: 1,
+  };
 
   const SHIP_STARTING_POSITION = -50;
 
@@ -23,7 +28,7 @@
     const world = new World(target, params);
 
     for (let i = 0; i < starCount; i++) {
-      const star = StartEntity.make({
+      const star = StarEntity.make({
         size: Math.random() * 4,
       });
 
@@ -33,16 +38,20 @@
       });
     }
 
-    for (let i = 0; i < shipCount; i++) {
-      const ship = Ship.make({
-        mass: Math.random() * 100 + 10,
-      });
+    Object.entries(shipCount).forEach(([type, count]) => {
+      if (ShipType.hasOwnProperty(type) === false) return;
 
-      world.addShip(ship, {
-        x: SHIP_STARTING_POSITION,
-        y: paddedRandom(world.height, 10),
-      });
-    }
+      for (let i = 0; i < count; i++) {
+        const ship = Ship.make({
+          type: type as ShipType,
+        });
+
+        world.addShip(ship, {
+          x: SHIP_STARTING_POSITION,
+          y: paddedRandom(world.height, 10),
+        });
+      }
+    });
 
     return world;
   }
@@ -67,7 +76,7 @@
           ship.applyForce(new Two.Vector(0.1, 0));
 
           if (ship.translation.x > world.width + 20) {
-            ship.translation.x = 0;
+            ship.translation.x = SHIP_STARTING_POSITION;
             ship.velocity.x = 0;
             ship.position.y = paddedRandom(world.height, 10);
           }

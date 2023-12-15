@@ -1,5 +1,5 @@
 import Two from "two.js";
-import type { StartEntity } from "./entities";
+import type { StarEntity } from "./entities";
 import type { Ship } from "./ship/ship";
 
 type Position = {
@@ -10,7 +10,7 @@ type Position = {
 export class World {
   private two: Two;
   ships: Ship[];
-  stars: StartEntity[];
+  stars: StarEntity[];
 
   constructor(element: HTMLElement, params = {}) {
     this.ships = [];
@@ -33,7 +33,7 @@ export class World {
     this.two.add(ship.shape);
   }
 
-  public addStar(star: StartEntity, position: Position) {
+  public addStar(star: StarEntity, position: Position) {
     this.stars.push(star);
     star.position.set(position.x, position.y);
     this.two.add(star.shape);
@@ -48,5 +48,9 @@ export class World {
 
   public play() {
     this.two.play();
+  }
+
+  public update() {
+    this.two.update();
   }
 }

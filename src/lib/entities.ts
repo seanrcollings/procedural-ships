@@ -61,11 +61,11 @@ interface StarParams {
   size: number;
 }
 
-export class StartEntity extends Entity {
+export class StarEntity extends Entity {
   public static make({ size }: StarParams) {
     const star = new Two.Star(0, 0, size / 2, size);
     star.fill = "white";
     star.noStroke();
-    return new StartEntity(star);
+    return new StarEntity(star);
   }
 }
