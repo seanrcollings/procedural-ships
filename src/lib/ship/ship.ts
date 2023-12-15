@@ -28,7 +28,7 @@ export class Ship extends Entity {
     const shape = builder.shape();
     const mass = builder.mass();
     const scale = builder.scale();
-    shape.scale = 0.2;
+    shape.scale = scale;
 
     return new Ship(shape, mass, params.type);
   }
@@ -87,7 +87,7 @@ const shipBuilders = {
       return ship;
     },
     mass() {
-      return rangeRandom(10, 100);
+      return rangeRandom(20, 100);
     },
     scale() {
       return 0.2;
@@ -104,66 +104,60 @@ const shipBuilders = {
     shape() {
       const ship = new Two.Group();
 
+      // Bomber is made out of three circles and a rectangle
+
       const shipColor = this.colors;
 
-      const wing = new Two.Polygon(-25, 25, 30, 3);
-      wing.fill = shipColor.wing;
-      wing.stroke = shipColor.wing;
-      ship.add(wing);
+      const body = new Two.Rectangle(0, 0, 70, 200);
+      body.fill = shipColor.body;
+      body.stroke = shipColor.body;
 
-      const wing2 = new Two.Polygon(25, 25, 30, 3);
-      wing2.fill = shipColor.wing;
-      wing2.stroke = shipColor.wing;
-      ship.add(wing2);
+      const nose = new Two.Circle(0, -body.height / 2, body.width / 2);
+      nose.fill = shipColor.nose;
+      nose.stroke = shipColor.nose;
 
       const flame = new Two.Path([
-        new Two.Anchor(-25, 50),
-        new Two.Anchor(25, 50),
-        new Two.Anchor(0, 100),
+        new Two.Anchor(-25, body.height / 2),
+        new Two.Anchor(25, body.height / 2),
+        new Two.Anchor(0, body.height / 2 + 50),
       ]);
       flame.fill = shipColor.exhaust;
       flame.stroke = shipColor.exhaust;
       ship.add(flame);
 
       const thruster = new Two.Path([
-        new Two.Anchor(-25, 50),
-        new Two.Anchor(25, 50),
-        new Two.Anchor(35, 75),
-        new Two.Anchor(-35, 75),
+        new Two.Anchor(-25, body.height / 2),
+        new Two.Anchor(25, body.height / 2),
+        new Two.Anchor(35, body.height / 2 + 25),
+        new Two.Anchor(-35, body.height / 2 + 25),
       ]);
 
       thruster.fill = shipColor.thruster;
       thruster.stroke = shipColor.thruster;
-      ship.add(thruster);
-
-      const nose = new Two.Polygon(0, -65, 29, 3);
-      nose.fill = shipColor.body;
-      nose.stroke = shipColor.body;
-      ship.add(nose);
-
-      const body = new Two.Rectangle(0, 0, 50, 100);
-      body.fill = shipColor.body;
-      body.stroke = shipColor.body;
-      ship.add(body);
 
       const viewport = new Two.Circle(0, 0, 10);
       viewport.fill = "white";
       ship.add(viewport);
 
+      ship.add(body);
+      ship.add(nose);
+      ship.add(flame);
+      ship.add(thruster);
+
       return ship;
     },
     mass() {
-      return rangeRandom(10, 100);
+      return rangeRandom(30, 200);
     },
     scale() {
-      return 0.2;
+      return 0.3;
     },
     colors: {
-      body: "green",
-      thruster: "green",
+      body: "#211647",
+      thruster: "#c63623",
       wing: "green",
       nose: "#c63623",
-      exhaust: "orange",
+      exhaust: "yellow",
     },
   },
   [ShipType.Transport]: {
@@ -238,10 +232,10 @@ const shipBuilders = {
       return ship;
     },
     mass() {
-      return rangeRandom(10, 100);
+      return rangeRandom(30, 100);
     },
     scale() {
-      return 0.2;
+      return 0.3;
     },
     colors: {
       body: "#2b6484",
@@ -319,7 +313,7 @@ const shipBuilders = {
       return ship;
     },
     mass() {
-      return rangeRandom(10, 100);
+      return rangeRandom(10, 75);
     },
     scale() {
       return 0.2;

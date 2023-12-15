@@ -23,6 +23,7 @@
   function createWorld() {
     const params = {
       fullscreen: true,
+      type: Two.Types.canvas,
     };
 
     const world = new World(target, params);
@@ -70,12 +71,12 @@
       }
 
       world.ships.forEach((ship) => {
-        if (mousePosition === null) {
+        if (mousePosition === null || true) {
           // Ships move from the left to the right
           ship.rotation = Math.PI / 2;
           ship.applyForce(new Two.Vector(0.1, 0));
 
-          if (ship.translation.x > world.width + 20) {
+          if (ship.translation.x > world.width + 100) {
             ship.translation.x = SHIP_STARTING_POSITION;
             ship.velocity.x = 0;
             ship.position.y = paddedRandom(world.height, 10);
@@ -87,6 +88,7 @@
           const angle = Math.atan2(dy, dx);
 
           ship.rotation = angle + Math.PI / 2;
+
           ship.applyForce(
             new Two.Vector(Math.sign(dx) * 0.1, Math.sign(dy) * 0.1)
           );
