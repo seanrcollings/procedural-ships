@@ -6,8 +6,9 @@
   import type { Star } from "two.js/src/shapes/star";
   import { Ship, ShipType } from "$lib/ship/ship";
   import { paddedRandom } from "$lib/random";
+  import type { Coordinates } from "$lib/types";
 
-  export let mousePosition: { x: number; y: number } | null = null;
+  export let mousePosition: Coordinates | null = null;
   export let starCount: number = 100;
   export let shipCount: Partial<{ [key in ShipType]: number }> = {
     [ShipType.Scout]: 1,
@@ -15,8 +16,13 @@
     [ShipType.Bomber]: 1,
     [ShipType.Transport]: 1,
   };
+  export let getShipStartingPosition: (
+    world: World,
+    ship: Ship,
+    index: number
+  ) => Coordinates;
 
-  const SHIP_STARTING_POSITION = -50;
+  const SHIP_WRAP_AROUND = -50;
 
   let target: HTMLElement;
 
@@ -39,7 +45,7 @@
       });
     }
 
-    Object.entries(shipCount).forEach(([type, count]) => {
+    Object.entries(shipCount).forEach(([type, count], idx) => {
       if (ShipType.hasOwnProperty(type) === false) return;
 
       for (let i = 0; i < count; i++) {
@@ -47,10 +53,7 @@
           type: type as ShipType,
         });
 
-        world.addShip(ship, {
-          x: SHIP_STARTING_POSITION,
-          y: paddedRandom(world.height, 10),
-        });
+        world.addShip(ship, getShipStartingPosition(world, ship, idx));
       }
     });
 
@@ -77,7 +80,7 @@
           ship.applyForce(new Two.Vector(0.1, 0));
 
           if (ship.translation.x > world.width + 100) {
-            ship.translation.x = SHIP_STARTING_POSITION;
+            ship.translation.x = SHIP_WRAP_AROUND;
             ship.velocity.x = 0;
             ship.position.y = paddedRandom(world.height, 10);
           }
@@ -114,5 +117,14 @@
     width: 100%;
     height: 100%;
     background-color: #1e293b;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 </style>

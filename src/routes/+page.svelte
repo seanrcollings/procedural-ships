@@ -1,22 +1,7 @@
 <script lang="ts">
-  import { page } from "$app/stores";
   import Space from "$lib/components/Space.svelte";
-  import { ShipType } from "$lib/ship/ship";
-
-  const starCount =
-    parseInt($page.url.searchParams.get("starCount") || "", 10) || 0;
-  const shipCount = {
-    [ShipType.Scout]:
-      parseInt($page.url.searchParams.get("scoutCount") || "", 10) || 0,
-    [ShipType.Fighter]:
-      parseInt($page.url.searchParams.get("fighterCount") || "", 10) || 0,
-    [ShipType.Bomber]:
-      parseInt($page.url.searchParams.get("bomberCount") || "", 10) || 0,
-    [ShipType.Transport]:
-      parseInt($page.url.searchParams.get("transportCount") || "", 10) || 0,
-  };
-
-  console.log($page.url.searchParams);
+  import { paddedRandom } from "$lib/random";
+  import { Ship, ShipType } from "$lib/ship/ship";
 
   let mousePosition: { x: number; y: number } | null = null;
 </script>
@@ -27,4 +12,17 @@
   }}
 />
 
-<Space {mousePosition} {starCount} {shipCount} />
+<Space
+  {mousePosition}
+  starCount={100}
+  shipCount={{
+    [ShipType.Fighter]: 10,
+    [ShipType.Bomber]: 0,
+    [ShipType.Transport]: 10,
+    [ShipType.Scout]: 10,
+  }}
+  getShipStartingPosition={(world) => ({
+    x: -50,
+    y: paddedRandom(world.height, 50),
+  })}
+/>
